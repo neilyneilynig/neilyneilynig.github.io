@@ -7,9 +7,19 @@ const GITHUB_USERNAME = 'neilyneilynig'
 
 // Project metadata (icons and tags)
 const projectMeta = {
+    'dna-store': {
+        icon: '🧬',
+        tags: ['Python', 'Bioinformatics', 'Research'],
+        featured: true,
+    },
     'quantum-sim': {
         icon: '🔮',
         tags: ['TypeScript', 'Quantum', 'Physics'],
+        featured: true,
+    },
+    'clusterkit': {
+        icon: '🌐',
+        tags: ['Go', 'DevOps', 'Homelab'],
         featured: true,
     },
     'ai-trainer': {
@@ -30,7 +40,7 @@ const projectMeta = {
     'job-board': {
         icon: '💼',
         tags: ['Next.js', 'Supabase', 'Stripe'],
-        featured: true,
+        featured: false,
     },
     'sockstar-3d': {
         icon: '🧦',
