@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neil | Developer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --bg: #0a0a0f;
@@ -22,6 +19,8 @@
             --text-dim: #71717a;
             --accent: #00d4ff;
             --accent-glow: rgba(0, 212, 255, 0.3);
+            --purple: #7c3aed;
+            --pink: #f472b6;
             --gradient: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #f472b6 100%);
         }
         
@@ -36,10 +35,7 @@
         /* Animated background */
         .bg-grid {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-image: 
                 linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
@@ -59,24 +55,8 @@
             z-index: -1;
         }
         
-        .glow-orb-1 {
-            background: var(--accent);
-            top: -200px;
-            right: -200px;
-            animation: float 20s ease-in-out infinite;
-        }
-        
-        .glow-orb-2 {
-            background: #7c3aed;
-            bottom: -200px;
-            left: -200px;
-            animation: float 25s ease-in-out infinite reverse;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(50px, 50px); }
-        }
+        .glow-orb-1 { background: var(--accent); top: -200px; right: -200px; }
+        .glow-orb-2 { background: var(--purple); bottom: -200px; left: -200px; }
         
         /* Header */
         header {
@@ -86,8 +66,8 @@
             align-items: center;
             border-bottom: 1px solid var(--border);
             backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
+            position: fixed;
+            top: 0; left: 0; right: 0;
             z-index: 100;
             background: rgba(10, 10, 15, 0.8);
         }
@@ -99,7 +79,6 @@
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
         nav a {
@@ -108,18 +87,33 @@
             margin-left: 30px;
             font-size: 0.9rem;
             transition: color 0.2s;
+            position: relative;
         }
         
-        nav a:hover {
-            color: var(--accent);
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
         }
+        
+        nav a:hover::after { width: 100%; }
+        nav a:hover { color: var(--accent); }
         
         /* Hero */
         .hero {
-            padding: 120px 40px;
+            padding: 180px 40px 120px;
             max-width: 1200px;
             margin: 0 auto;
             text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .hero-badge {
@@ -135,7 +129,7 @@
         }
         
         .hero h1 {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 700;
             line-height: 1.1;
             margin-bottom: 20px;
@@ -145,7 +139,11 @@
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+        }
+        
+        .hero h1 .word {
+            display: inline-block;
+            opacity: 0;
         }
         
         .hero p {
@@ -168,7 +166,7 @@
             font-size: 0.95rem;
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -181,7 +179,7 @@
         
         .btn-primary:hover {
             box-shadow: 0 0 30px var(--accent-glow);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
         
         .btn-secondary {
@@ -195,10 +193,25 @@
             color: var(--accent);
         }
         
+        /* Floating icons */
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+        
         /* Projects */
         .section {
             padding: 100px 40px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
@@ -229,7 +242,7 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 30px;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
         }
@@ -237,37 +250,38 @@
         .project-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: var(--gradient);
-            opacity: 0;
-            transition: opacity 0.3s;
+            transform: scaleX(0);
+            transition: transform 0.4s;
         }
         
         .project-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 212, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
         }
         
         .project-card:hover::before {
-            opacity: 1;
+            transform: scaleX(1);
         }
         
         .project-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        
+        .project-card:hover .project-icon {
+            transform: scale(1.2) rotate(5deg);
         }
         
         .project-title {
             font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         
         .project-desc {
@@ -291,6 +305,12 @@
             font-size: 0.8rem;
             font-family: 'JetBrains Mono', monospace;
             color: var(--text-dim);
+            transition: all 0.2s;
+        }
+        
+        .project-card:hover .tag {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent);
         }
         
         .project-links {
@@ -305,45 +325,87 @@
             display: flex;
             align-items: center;
             gap: 5px;
-        }
-        
-        .project-link:hover {
-            text-decoration: underline;
-        }
-        
-        /* Skills */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .skill-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
             transition: all 0.2s;
         }
         
-        .skill-card:hover {
-            border-color: var(--accent);
+        .project-link:hover {
+            transform: translateX(5px);
         }
         
-        .skill-icon {
-            font-size: 2rem;
+        /* Stats section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+            padding: 60px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+        
+        /* Terminal */
+        .terminal {
+            background: #0d0d0d;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin: 40px auto;
+            max-width: 700px;
+            text-align: left;
+        }
+        
+        .terminal-header {
+            display: flex;
+            gap: 8px;
             margin-bottom: 15px;
         }
         
-        .skill-name {
-            font-weight: 600;
-            margin-bottom: 5px;
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
         }
         
-        .skill-level {
-            font-size: 0.85rem;
-            color: var(--text-dim);
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #febc2e; }
+        .terminal-dot.green { background: #28c840; }
+        
+        .terminal-line { margin: 5px 0; }
+        .terminal-prompt { color: var(--accent); }
+        .terminal-output { color: var(--text-dim); }
+        
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--accent);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         
         /* Footer */
@@ -370,15 +432,14 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             color: var(--text);
-            text-decoration: none;
             font-size: 1.3rem;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
         
         .social-links a:hover {
             border-color: var(--accent);
             color: var(--accent);
-            transform: translateY(-3px);
+            transform: translateY(-5px) rotate(5deg);
         }
         
         .copyright {
@@ -388,81 +449,18 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            header {
-                padding: 15px 20px;
-            }
-            
-            .section {
-                padding: 60px 20px;
-            }
-            
-            nav a {
-                margin-left: 15px;
-                font-size: 0.8rem;
-            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1rem; }
+            header { padding: 15px 20px; }
+            .section { padding: 60px 20px; }
+            nav a { margin-left: 15px; font-size: 0.8rem; }
+            .projects-grid { grid-template-columns: 1fr; }
         }
         
-        /* Terminal animation */
-        .terminal {
-            background: #0d0d0d;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            margin: 40px auto;
-            max-width: 600px;
-            text-align: left;
-        }
-        
-        .terminal-header {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .terminal-dot.red { background: #ff5f57; }
-        .terminal-dot.yellow { background: #febc2e; }
-        .terminal-dot.green { background: #28c840; }
-        
-        .terminal-line {
-            margin: 5px 0;
-        }
-        
-        .terminal-prompt {
-            color: var(--accent);
-        }
-        
-        .terminal-output {
-            color: var(--text-dim);
-        }
-        
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 18px;
-            background: var(--accent);
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
         }
     </style>
 </head>
@@ -475,7 +473,7 @@
         <div class="logo">neil.dev</div>
         <nav>
             <a href="#projects">Projects</a>
-            <a href="#skills">Skills</a>
+            <a href="#stats">Stats</a>
             <a href="https://github.com/neilyneilynig" target="_blank">GitHub</a>
         </nav>
     </header>
@@ -483,7 +481,14 @@
     <main>
         <section class="hero">
             <div class="hero-badge">👋 Welcome to my corner of the internet</div>
-            <h1>I build <span class="gradient">cool stuff</span><br>from scratch</h1>
+            <h1>
+                <span class="word">I</span>
+                <span class="word">build</span>
+                <span class="word gradient">cool</span>
+                <span class="word gradient">stuff</span><br>
+                <span class="word">from</span>
+                <span class="word">scratch</span>
+            </h1>
             <p>Student developer passionate about low-level systems, AI/ML, and understanding how things really work under the hood.</p>
             
             <div class="terminal">
@@ -493,14 +498,15 @@
                     <div class="terminal-dot green"></div>
                 </div>
                 <div class="terminal-line">
-                    <span class="terminal-prompt">~/neil $</span> cat interests.txt
+                    <span class="terminal-prompt">~/neil $</span> cat projects.txt
                 </div>
                 <div class="terminal-line terminal-output">
                     → Neural networks from scratch<br>
-                    → Programming language design<br>
-                    → Homelab infrastructure<br>
-                    → Physics simulations<br>
-                    → Breaking things to learn how they work
+                    → Custom programming languages<br>
+                    → AI assistant frameworks<br>
+                    → Phone systems with voice AI<br>
+                    → Homelab infrastructure tools<br>
+                    → Physics simulations
                 </div>
                 <div class="terminal-line">
                     <span class="terminal-prompt">~/neil $</span> <span class="cursor"></span>
@@ -517,121 +523,116 @@
         </section>
         
         <section class="section" id="projects">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <h2 class="section-title">Featured Projects</h2>
                 <p class="section-subtitle">Things I've built to understand how stuff works</p>
             </div>
             
             <div class="projects-grid">
-                <div class="project-card">
+                <div class="project-card reveal">
+                    <div class="project-icon">🤖</div>
+                    <h3 class="project-title">Clawder</h3>
+                    <p class="project-desc">A lightweight, hackable AI assistant framework. Multi-model support, plugin system, and works with Discord, Telegram, or CLI. Like Moltbot, but yours to customize.</p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">AI</span>
+                        <span class="tag">Framework</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/neilyneilynig/clawder" class="project-link" target="_blank">→ Source</a>
+                    </div>
+                </div>
+                
+                <div class="project-card reveal">
+                    <div class="project-icon">📞</div>
+                    <h3 class="project-title">AI Phone System</h3>
+                    <p class="project-desc">Turn any phone number into an AI receptionist. Speech recognition, natural conversation, appointment booking, and call transfers - all automated.</p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Twilio</span>
+                        <span class="tag">Whisper</span>
+                        <span class="tag">GPT-4</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/neilyneilynig/ai-phone-system" class="project-link" target="_blank">→ Source</a>
+                    </div>
+                </div>
+                
+                <div class="project-card reveal">
                     <div class="project-icon">🧠</div>
                     <h3 class="project-title">Neural Network from Scratch</h3>
-                    <p class="project-desc">A complete neural network implementation using only NumPy. No TensorFlow, no PyTorch — just pure mathematics. Includes backpropagation, multiple activations, and mini-batch training.</p>
+                    <p class="project-desc">A complete neural network using only NumPy. No TensorFlow, no PyTorch — just pure mathematics. Backpropagation, activations, mini-batch training.</p>
                     <div class="project-tags">
                         <span class="tag">Python</span>
                         <span class="tag">NumPy</span>
                         <span class="tag">ML</span>
-                        <span class="tag">Math</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/neilyneilynig/neural-net-from-scratch" class="project-link" target="_blank">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            Source
-                        </a>
+                        <a href="https://github.com/neilyneilynig/neural-net-from-scratch" class="project-link" target="_blank">→ Source</a>
                     </div>
                 </div>
                 
-                <div class="project-card">
-                    <div class="project-icon">⚛️</div>
-                    <h3 class="project-title">Particle Physics Simulator</h3>
-                    <p class="project-desc">Real-time physics simulation with elastic collisions, gravity, and interactive forces. Click to attract particles, adjust gravity, and watch the chaos unfold.</p>
+                <div class="project-card reveal">
+                    <div class="project-icon">🏠</div>
+                    <h3 class="project-title">HomeLab Orchestrator</h3>
+                    <p class="project-desc">Enterprise-grade infrastructure management for homelabs. Control plane, lightweight agents, and role-based deployment across any hardware.</p>
                     <div class="project-tags">
-                        <span class="tag">JavaScript</span>
-                        <span class="tag">Canvas</span>
-                        <span class="tag">Physics</span>
-                        <span class="tag">WebGL</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">DevOps</span>
+                        <span class="tag">Docker</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/neilyneilynig/particle-physics-sim" class="project-link" target="_blank">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            Source
-                        </a>
+                        <a href="https://github.com/neilyneilynig/homelab-orchestrator" class="project-link" target="_blank">→ Source</a>
                     </div>
                 </div>
                 
-                <div class="project-card">
+                <div class="project-card reveal">
                     <div class="project-icon">🔤</div>
                     <h3 class="project-title">MiniLang</h3>
-                    <p class="project-desc">A tiny programming language with a complete interpreter. Features lexer, recursive descent parser, and tree-walking interpreter. Supports variables, loops, functions, and recursion.</p>
+                    <p class="project-desc">A tiny programming language with lexer, parser, and interpreter. Variables, loops, functions, recursion - built from the ground up.</p>
                     <div class="project-tags">
                         <span class="tag">Python</span>
                         <span class="tag">Compilers</span>
                         <span class="tag">PL Theory</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/neilyneilynig/mini-lang" class="project-link" target="_blank">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            Source
-                        </a>
+                        <a href="https://github.com/neilyneilynig/mini-lang" class="project-link" target="_blank">→ Source</a>
                     </div>
                 </div>
                 
-                <div class="project-card">
-                    <div class="project-icon">🏠</div>
-                    <h3 class="project-title">HomeLab Orchestrator</h3>
-                    <p class="project-desc">Enterprise-grade infrastructure management for homelabs. Control plane with web dashboard, lightweight agents, and role-based service deployment across any mix of hardware.</p>
+                <div class="project-card reveal">
+                    <div class="project-icon">⚛️</div>
+                    <h3 class="project-title">Particle Physics Simulator</h3>
+                    <p class="project-desc">Real-time physics simulation with elastic collisions, gravity, and interactive forces. Click to attract particles and watch the chaos.</p>
                     <div class="project-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">DevOps</span>
-                        <span class="tag">Docker</span>
-                        <span class="tag">Infrastructure</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Canvas</span>
+                        <span class="tag">Physics</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/neilyneilynig/homelab-orchestrator" class="project-link" target="_blank">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            Source
-                        </a>
+                        <a href="https://github.com/neilyneilynig/particle-physics-sim" class="project-link" target="_blank">→ Source</a>
                     </div>
                 </div>
             </div>
         </section>
         
-        <section class="section" id="skills">
-            <div class="section-header">
-                <h2 class="section-title">Tech Stack</h2>
-                <p class="section-subtitle">Languages and tools I work with</p>
-            </div>
-            
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-icon">🐍</div>
-                    <div class="skill-name">Python</div>
-                    <div class="skill-level">ML, Automation, Backend</div>
+        <section class="section" id="stats">
+            <div class="stats reveal">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="6">0</div>
+                    <div class="stat-label">Projects</div>
                 </div>
-                <div class="skill-card">
-                    <div class="skill-icon">⚡</div>
-                    <div class="skill-name">JavaScript</div>
-                    <div class="skill-level">Web, Node.js, Canvas</div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="10000">0</div>
+                    <div class="stat-label">Lines of Code</div>
                 </div>
-                <div class="skill-card">
-                    <div class="skill-icon">🐧</div>
-                    <div class="skill-name">Linux</div>
-                    <div class="skill-level">Servers, Networking</div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="5">0</div>
+                    <div class="stat-label">Languages</div>
                 </div>
-                <div class="skill-card">
-                    <div class="skill-icon">🐳</div>
-                    <div class="skill-name">Docker</div>
-                    <div class="skill-level">Containers, DevOps</div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">🌐</div>
-                    <div class="skill-name">Networking</div>
-                    <div class="skill-level">UniFi, VLANs, DNS</div>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon">🤖</div>
-                    <div class="skill-name">AI/ML</div>
-                    <div class="skill-level">Neural Nets, NLP</div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="100">0</div>
+                    <div class="stat-label">% From Scratch</div>
                 </div>
             </div>
         </section>
@@ -643,7 +644,168 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             </a>
         </div>
-        <p class="copyright">Built with curiosity and caffeine ☕</p>
+        <p class="copyright">Built with curiosity, caffeine, and GSAP ☕</p>
     </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Hero animation
+        gsap.from('.hero-badge', {
+            opacity: 0,
+            y: -30,
+            duration: 0.8,
+            delay: 0.2
+        });
+        
+        // Animate each word in the title
+        gsap.to('.word', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'back.out(1.7)',
+            delay: 0.5
+        });
+        
+        gsap.from('.hero p', {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            delay: 1.2
+        });
+        
+        gsap.from('.terminal', {
+            opacity: 0,
+            scale: 0.9,
+            duration: 0.8,
+            delay: 1.5,
+            ease: 'back.out(1.5)'
+        });
+        
+        gsap.from('.hero-buttons', {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            delay: 1.8
+        });
+        
+        // Floating orbs animation
+        gsap.to('.glow-orb-1', {
+            x: 100,
+            y: 50,
+            duration: 20,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        
+        gsap.to('.glow-orb-2', {
+            x: -80,
+            y: -60,
+            duration: 25,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        
+        // Scroll reveal for sections
+        gsap.utils.toArray('.reveal').forEach(elem => {
+            gsap.to(elem, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: elem,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+        
+        // Stagger project cards
+        ScrollTrigger.create({
+            trigger: '.projects-grid',
+            start: 'top 80%',
+            onEnter: () => {
+                gsap.to('.project-card', {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.15,
+                    ease: 'back.out(1.2)'
+                });
+            }
+        });
+        
+        // Counter animation for stats
+        ScrollTrigger.create({
+            trigger: '.stats',
+            start: 'top 80%',
+            onEnter: () => {
+                document.querySelectorAll('.stat-number').forEach(el => {
+                    const target = parseInt(el.dataset.count);
+                    gsap.to(el, {
+                        innerHTML: target,
+                        duration: 2,
+                        snap: { innerHTML: 1 },
+                        ease: 'power2.out'
+                    });
+                });
+            }
+        });
+        
+        // Parallax effect on scroll
+        gsap.to('.glow-orb', {
+            yPercent: -20,
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 1
+            }
+        });
+        
+        // Header hide/show on scroll
+        let lastScroll = 0;
+        const header = document.querySelector('header');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                gsap.to(header, { y: -100, duration: 0.3 });
+            } else {
+                gsap.to(header, { y: 0, duration: 0.3 });
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Magnetic effect on buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.3
+                });
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.3
+                });
+            });
+        });
+    </script>
 </body>
 </html>
