@@ -7,6 +7,16 @@ const GITHUB_USERNAME = 'neilyneilynig'
 
 // Project metadata (icons and tags)
 const projectMeta = {
+    'reverselang': {
+        icon: '🔄',
+        tags: ['Rust', 'PL Theory', 'Research'],
+        featured: true,
+    },
+    'zk-studio': {
+        icon: '🔐',
+        tags: ['TypeScript', 'Cryptography', 'ZK'],
+        featured: true,
+    },
     'dna-store': {
         icon: '🧬',
         tags: ['Python', 'Bioinformatics', 'Research'],
