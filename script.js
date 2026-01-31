@@ -7,6 +7,11 @@ const GITHUB_USERNAME = 'neilyneilynig'
 
 // Project metadata (icons and tags)
 const projectMeta = {
+    'turbolora': {
+        icon: '⚡',
+        tags: ['Python', 'PyTorch', 'AI/ML'],
+        featured: true,
+    },
     'reverselang': {
         icon: '🔄',
         tags: ['Rust', 'PL Theory', 'Research'],
@@ -24,7 +29,7 @@ const projectMeta = {
     },
     'quantum-sim': {
         icon: '🔮',
-        tags: ['TypeScript', 'Quantum', 'Physics'],
+        tags: ['TypeScript', 'Quantum', 'React'],
         featured: true,
     },
     'clusterkit': {
@@ -34,12 +39,12 @@ const projectMeta = {
     },
     'ai-trainer': {
         icon: '🧠',
-        tags: ['Next.js', 'AI', 'React'],
+        tags: ['Next.js', 'TypeScript', 'AI'],
         featured: true,
     },
     'pi-monitor': {
         icon: '📊',
-        tags: ['Python', 'Raspberry Pi', 'CLI'],
+        tags: ['Python', 'Raspberry Pi', 'TUI'],
         featured: true,
     },
     'netwatch': {
@@ -49,12 +54,42 @@ const projectMeta = {
     },
     'job-board': {
         icon: '💼',
-        tags: ['Next.js', 'Supabase', 'Stripe'],
+        tags: ['Next.js', 'Supabase', 'React'],
         featured: false,
     },
-    'sockstar-3d': {
-        icon: '🧦',
-        tags: ['3D', 'WebGL', 'Games'],
+    'calendar': {
+        icon: '📅',
+        tags: ['TypeScript', 'Productivity'],
+        featured: false,
+    },
+    'homelab': {
+        icon: '🏠',
+        tags: ['Infrastructure', 'Self-hosted'],
+        featured: false,
+    },
+    'newsletter': {
+        icon: '📧',
+        tags: ['Content', 'Writing'],
+        featured: false,
+    },
+    'research': {
+        icon: '🔬',
+        tags: ['Academic', 'Notes'],
+        featured: false,
+    },
+    'school': {
+        icon: '🎓',
+        tags: ['Education', 'Learning'],
+        featured: false,
+    },
+    'tinkering': {
+        icon: '🔧',
+        tags: ['Experiments', 'Prototypes'],
+        featured: false,
+    },
+    'tools': {
+        icon: '🛠️',
+        tags: ['Utilities', 'Scripts'],
         featured: false,
     },
 }
@@ -138,8 +173,8 @@ async function renderProjects() {
         return b.stargazers_count - a.stargazers_count
     })
     
-    // Take top 6
-    const topRepos = sortedRepos.slice(0, 6)
+    // Take top 12
+    const topRepos = sortedRepos.slice(0, 12)
     
     grid.innerHTML = topRepos.map(createProjectCard).join('')
     
