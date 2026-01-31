@@ -7,6 +7,11 @@ const GITHUB_USERNAME = 'neilyneilynig'
 
 // Project metadata (icons and tags)
 const projectMeta = {
+    'swarm': {
+        icon: '🐝',
+        tags: ['Python', 'Distributed', 'AI'],
+        featured: true,
+    },
     'turbolora': {
         icon: '⚡',
         tags: ['Python', 'PyTorch', 'AI/ML'],
